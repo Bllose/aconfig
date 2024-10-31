@@ -66,7 +66,7 @@ class Config():
 
         # 当前文件的绝对路径
         exe_path = sys.argv[0]
-        root_path = get_root_path(exe_path)
+        root_path = os.path.abspath(os.sep)
         """
         默认逻辑下尝试寻找可以加载的配置文件
         """
@@ -212,27 +212,6 @@ def class_config(cls):
             load_config(kwargs)
             super().__init__(*args, **kwargs)
     return wrapper_class
-
-
-def get_root_path(cur_path: str):
-    if cur_path is None or len(cur_path) < 1 or os.sep not in cur_path:
-        """
-        非法路径，直接返回
-        """
-        return cur_path
-    
-    # 最大路径深度
-    MAX_DEEP = 20
-    parent_path = os.path.dirname(cur_path)
-    while parent_path != cur_path and MAX_DEEP > -1:
-        cur_path = parent_path
-        parent_path = os.path.dirname(cur_path)
-        MAX_DEEP -= 1
-
-    if MAX_DEEP < 0:
-        logging.warning(f'路径超过最大深度，最终获取到路径{parent_path}, 可能并不是根目录!')
-    return parent_path
-
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
