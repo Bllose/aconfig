@@ -8,5 +8,7 @@ build-backend = "setuptools.build_meta"
 name = "bllose_config_model"
 version = "0.0.1"
 dependencies = [
-    'importlib-metadata; python_version<"3.12"'
+    'importlib-metadata; python_version<"3.12"',
+    "javaproperties == 0.8.1",
+    "PyYAML== 6.0.2"
 ]

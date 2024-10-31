@@ -70,7 +70,7 @@ class Config():
         """
         默认逻辑下尝试寻找可以加载的配置文件
         """
-        default_config_file_list = ['config.yml', 'config.yaml']
+        default_config_file_list = ['config.yml', 'config.yaml', 'config.properties']
         loaded_config_file_list = []
         for cur_file in default_config_file_list:
             absPath = os.path.dirname(exe_path) + os.sep + cur_file
@@ -102,8 +102,22 @@ class Config():
             case 'xml':
                 pass
             case 'properties':
-                pass
+                self.load_properties_config_file(absPath)
+                return True
         return False
+    
+    def load_properties_config_file(self, absPath: str) -> None:
+        """
+        加载properties文件, 读取配置信息，并填充到 config 对象中
+        """
+        logging.debug(f'当前加载配置文件 -> {absPath}')
+
+        from javaproperties import Properties
+        properties = Properties()
+        with open(absPath, 'rb') as f:  
+            properties.load(f)
+        self.config.update(properties.data)
+        logging.debug(f'加载配置文件{absPath}完成\r\n一共加载配置{len(properties.data)}项')
 
     def load_yaml_config_file(self, absPath: str) -> None:
         """
@@ -222,7 +236,8 @@ def get_root_path(cur_path: str):
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
-    myConfig = Config(1,2,4,scope.SYS)
+    myConfig = Config()
     myConfig.load()
     app_id = myConfig.get('eqb')['pro']['appId']
     print(app_id)
+    print(myConfig.get('okx.Bllose.apiKey'))
